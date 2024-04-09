@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Form</title>
+  <link rel="stylesheet" href="{% static 'register/login.css' %}">
+</head>
+<body>
+  <div class="wrapper">
+    <form action="#" method='post'>
+        {% csrf_token %}
+      <h2>Login</h2>
+      <h4 style="color: white;">{{context}}</h4>
+      <br>
+      
+      {% for fm in form  %}
+      <div class="input-field1">
+        <span style="color: white;">{{ fm.label_tag}}</span> {{fm}} {{fm.errors|striptags}} <br><br>
+      </div>
+      {% endfor %}
+        
+      <div class="forget">
+        <a href="#">Forgot password?</a>
+      </div>
+      <button type="submit">Log In</button>
+      <div class="register">
+        <p>Don't have an account? <a href="{% url 'user_form' %}">Register</a></p>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
