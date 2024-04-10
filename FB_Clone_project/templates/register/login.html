@@ -1,11 +1,11 @@
-{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Form</title>
-  <link rel="stylesheet" href="{% static 'register/login.css' %}">
+
 </head>
 <body>
   <div class="wrapper">
@@ -17,10 +17,10 @@
       
       {% for fm in form  %}
       <div class="input-field1">
-        <span style="color: white;">{{ fm.label_tag}}</span> {{fm}} {{fm.errors|striptags}} <br><br>
+      <span style="color: black;">{{ fm.label_tag}}</span> {{fm}} {{fm.errors|striptags}} <br><br>
       </div>
       {% endfor %}
-        
+
       <div class="forget">
         <a href="#">Forgot password?</a>
       </div>

@@ -14,7 +14,13 @@ class UserPost(models.Model):
     
     def __str__(self):
         return self.user.first_name
-
+    
+class Like(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(UserPost, on_delete=models.CASCADE, related_name='post_comment')
+    
+    def __str__(self):
+        return f"{self.user}, {self.post.user.username}"
 
 class UserComments(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

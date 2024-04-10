@@ -73,7 +73,6 @@
     {% for post in user_post %}
     <div class="row me-5 ms-5">
         <div class="col-6" style="border: 2px solid black; text-align: center; height: auto;">
-            
                 <h2>{{post.user.first_name|capfirst}} {{post.user.last_name|capfirst}} </h2>
                 <img style="width: 300px;" src="/media/{{post.image}}" alt="" srcset="">
                 <br>
@@ -116,7 +115,6 @@
         </div>
     </div>
     {% endfor %}
-    
     {% endif %}
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

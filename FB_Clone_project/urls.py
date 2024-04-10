@@ -20,7 +20,7 @@ from FB_Clone_project.apps import register
 from FB_Clone_project.apps import post
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin', admin.site.urls),
     path('',include('register.urls')),
     path('',include('post.urls')),
 ]

@@ -1,9 +1,30 @@
 from django.shortcuts import render, redirect
 
-# Create your views here.
 from .forms import UserPostForm, UserCommentForm
 from .models import *
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+
+def like(request,post_id):
+    user = request.user
+    post = UserPost.objects.get(id = post_id)
+
+    liked = Like.objects.get(user=user,post=post).count()
+    if not liked :
+        like = Like.objects.create(user=user,post=post)
+        like.save()
+        post.like = post.like + 1
+        post.save()
+
+def unlike(request, post_id):
+    user = request.user
+    post = UserPost.objects.get(id = post_id)
+    like = Like.objects.get(user=user,post=post)
+    liked = like.count()
+    if liked:
+        post.like = post.like - 1
+        post.save()
+        liked.delete()
 
 @login_required
 def PostFormView(request):
@@ -73,7 +94,6 @@ def post_detail(request,post_id):
     all_cmt = UserComments.objects.all().order_by('-created_at')
     return render(request,'post/post_detail.html',{'post':user_post,'comment':all_cmt})
 
-from django.http import JsonResponse
 
 def comment_on_post(request, post_id):
     if request.method == 'POST':
