@@ -1,6 +1,4 @@
 from django.db import models
-
-# Create your models here.
 from django.conf import settings
 
 class UserPost(models.Model):
@@ -17,7 +15,7 @@ class UserPost(models.Model):
     
 class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post = models.ForeignKey(UserPost, on_delete=models.CASCADE, related_name='post_comment')
+    post = models.ForeignKey(UserPost, on_delete=models.CASCADE, related_name='post_like')
     
     def __str__(self):
         return f"{self.user}, {self.post.user.username}"

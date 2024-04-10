@@ -1,30 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import UserPostForm, UserCommentForm
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.db.models import Count
 
-def like(request,post_id):
-    user = request.user
-    post = UserPost.objects.get(id = post_id)
-
-    liked = Like.objects.get(user=user,post=post).count()
-    if not liked :
-        like = Like.objects.create(user=user,post=post)
-        like.save()
-        post.like = post.like + 1
-        post.save()
-
-def unlike(request, post_id):
-    user = request.user
-    post = UserPost.objects.get(id = post_id)
-    like = Like.objects.get(user=user,post=post)
-    liked = like.count()
-    if liked:
-        post.like = post.like - 1
-        post.save()
-        liked.delete()
 
 @login_required
 def PostFormView(request):
@@ -73,10 +54,12 @@ def delete_post(request,id):
 
 @login_required
 def all_user_post(request):
-    post = UserPost.objects.all().order_by('-created_at')
-    # show_cmt
+    all_post = UserPost.objects.all()
+    for post in all_post:
+        post.is_liked = Like.objects.filter(user=request.user,post=post).exists()
+        
     all_cmt = UserComments.objects.all().order_by('-created_at')
-    return render(request,'post/all_user_post.html',{'all_user_post':post,'comment':all_cmt})
+    return render(request,'post/all_user_post.html',{'all_user_post':all_post,'comment':all_cmt})
 
 
 @login_required
@@ -108,3 +91,27 @@ def comment_on_post(request, post_id):
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False})
+
+
+def like(request,post_id):
+    user = request.user
+    post = UserPost.objects.get(id = post_id)
+
+    liked = Like.objects.filter(user=user,post=post).count()
+    if not liked :
+        like = Like.objects.create(user=user,post=post)
+        like.save()
+        post.like = post.like + 1
+        post.save()
+        return JsonResponse({'success': True})
+
+def unlike(request, post_id):
+    user = request.user
+    post = UserPost.objects.get(id = post_id)
+    like = Like.objects.filter(user=user,post=post)
+    liked = like.count()
+    if liked:
+        post.like = post.like - 1
+        post.save()
+        like.delete()
+    return JsonResponse({'success': True})

@@ -70,7 +70,37 @@
             <h2>{{post.user.first_name}} {{post.user.last_name}} </h2>
             <img style="width: 300px;padding-left: 25%;" src="/media/{{post.image}}" alt="" srcset=""> <br>
         </a>
-            <label for="like">Like: {{post.like}}</label> <br>
+<!----------------------------------------------------------------------->
+        <div style="border: 2px solid black;">
+            <label for="like">
+                
+                {% if post.is_liked %}
+                <!--red heart-->
+                <form>
+                    {% csrf_token %}
+
+                        <button type="button" onclick="submitUnLike('{{ post.id }}')">
+                            Unlike
+                        </button>
+                        
+                    </form>
+                    
+                    {% else %}
+                    <!-- blank heart -->
+                    <form>
+                        {% csrf_token %}
+                        <button type="button" onclick="submitLike('{{ post.id }}')">
+                            Like
+                        </button>        
+                </form>
+
+                {% endif %}
+                {{post.like}}
+            </label> <br>
+        </div>    
+<!----------------------------------------------------------------------->
+            
+
             <label style="color: blue;" for="caption">Caption: {{post.cap}}</label> <br>
             <label style="color: blue;" for="caption">Description: {{post.desc}}</label> <br>
             <label for="#">
@@ -96,11 +126,11 @@
         <!-- Model -->
         <span onclick="closeModal('{{ post.id }}')" class="close">&times;</span>
         <h1>Comment</h1>
-        <form id="commentForm{{ post.id }}">
-            {% csrf_token %}
-            <textarea name="comment" id="comment{{ post.id }}" cols="50" rows="5"></textarea>
-            <button type="button" onclick="submitComment('{{ post.id }}')">Submit (ajax)</button>
-        </form>
+            <form id="commentForm{{ post.id }}">
+                {% csrf_token %}
+                <textarea name="comment" id="comment{{ post.id }}" cols="50" rows="5"></textarea>
+                <button type="button" onclick="submitComment('{{ post.id }}')">Submit (ajax)</button>
+            </form>
     </div>
 </div>
 {% endfor %}
@@ -108,5 +138,44 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{% static 'post/comment.js' %}"></script>
+<script >   
+
+    // unlike function
+    function submitUnLike(post_id){
+    $.ajax({
+        url: '/post/unlike/'+ post_id +'/',
+        type: 'GET',
+        data: {
+            'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+        },
+        success : function(response){
+            if (response.success){
+                location.reload();
+            }
+        } //success close
+    })//ajax close
+}// submimtLike close
+
+
+
+//like function
+function submitLike(post_id){
+$.ajax({
+    url: '/post/like/'+ post_id +'/',
+    type: 'GET',
+    data: {
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    },
+    success : function(response){
+        if (response.success){
+            location.reload();
+        }
+    } //success close
+})//ajax close
+}// submimtLike close
+
+</script>
 
 </html>
+
+
