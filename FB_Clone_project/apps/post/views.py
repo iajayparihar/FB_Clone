@@ -4,7 +4,7 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Count
-
+from register.models import CustomUser
 
 @login_required
 def PostFormView(request):
@@ -79,6 +79,7 @@ def post_detail(request,post_id):
 
 
 def comment_on_post(request, post_id):
+    print(request.method)
     if request.method == 'POST':
         comment_text = request.POST.get('comment')
         if not comment_text:
@@ -87,10 +88,27 @@ def comment_on_post(request, post_id):
         post = UserPost.objects.get(id=post_id)
         new_comment = UserComments.objects.create(user=request.user, post=post, comment=comment_text)
         new_comment.save()
-        
         return JsonResponse({'success': True})
-    else:
-        return JsonResponse({'success': False})
+
+def update_on_comment(request):
+    if request.method == 'POST':
+        comment_text = request.POST.get('comment')
+        if not comment_text:
+            return JsonResponse({'success': False, 'message': 'Please add comment...'})
+        
+        cmt = UserComments.objects.get(id=request.POST.get('cmt_id'))
+        cmt.comment = comment_text
+        cmt.save()
+        return JsonResponse({'success': True})
+        
+    return JsonResponse({'success': False})
+
+def delete_comment(request):
+    if request.method == 'POST':
+        cmt_id = request.POST.get('cmt_id')
+        UserComments.objects.get(id=cmt_id).delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
 
 
 def like(request,post_id):

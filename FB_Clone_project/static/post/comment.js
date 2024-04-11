@@ -1,16 +1,16 @@
 
 function openModal(id) {
-    var modal = document.getElementById("myModal" + id);
+    let modal = document.getElementById("myModal" + id);
     modal.style.display = "block";
 }
 
 function closeModal(id) {
-    var modal = document.getElementById("myModal" + id);
+    let modal = document.getElementById("myModal" + id);
     modal.style.display = "none";
 }
 
 function submitComment(post_id) {
-    var commentText = $('#comment' + post_id).val(); // post_id is string ==> `$('#comment1')`
+    let commentText = $('#comment' + post_id).val(); // post_id is string ==> `$('#comment1')`
     $.ajax({
         url: '/post/comment/' + post_id + '/',
         type: 'POST',
