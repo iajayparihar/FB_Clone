@@ -114,7 +114,7 @@
                 {% if post.id == cmt.post.id %}
                     @{{cmt.user.username}}:    {{cmt.comment}} 
                     {% if request.user.username == cmt.user.username %}
-                        <span id="commentId{{cmt.post.id}}" value='{{cmt.id}}' style="display: ;" > {{cmt.id}} </span>
+                        <span id="commentId{{cmt.post.id}}" value='{{cmt.id}}' style="display: none;" > {{cmt.id}} </span>
                         <button type="button" onclick="updateOpenModal('{{ cmt.post.id }}')">update</button>
                         <button type="button" onclick="deleteCmt('{{cmt.id}}')">delete</button>
                     {% endif %}
