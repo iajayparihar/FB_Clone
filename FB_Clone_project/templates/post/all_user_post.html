@@ -70,7 +70,6 @@
             <h2>{{post.user.first_name}} {{post.user.last_name}} </h2>
             <img style="width: 300px;padding-left: 25%;" src="/media/{{post.image}}" alt="" srcset=""> <br>
         </a>
-<!----------------------------------------------------------------------->
 
             <label for="like">
                 
@@ -97,7 +96,7 @@
                 {% endif %}
             </label> <br>
 
-<!----------------------------------------------------------------------->
+
 
 {% if request.user.id == post.user.id %}
 <a href="{% url 'Post:update_post' post.id %}">update</a>
@@ -105,26 +104,52 @@
 {% endif %}
     <br>
 
-<!----------------------------------------------------------------------->
-            <label style="color: blue;" for="caption">Caption: {{post.cap}}</label> <br>
-            <label style="color: blue;" for="caption">Description: {{post.desc}}</label> <br>
-            <label for="#">
-                <div class="comment" style="border: 2px dotted black; overflow: scroll; height: 70px;" >
-                    {% for cmt in comment %}
-                        {% if post.id == cmt.post.id %}
-                        @{{cmt.user.username}}:    {{cmt.comment}} <br>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+    <label style="color: blue;" for="caption">Caption: {{post.cap}}</label> <br>
+    <label style="color: blue;" for="caption">Description: {{post.desc}}</label> <br>
+    <label for="#">
+        
+        <!----------------------------------------------------------------------->
+        <div class="comment" style="border: 2px dotted black; overflow: scroll; height: 120px;" >
+            {% for cmt in comment %}
+                {% if post.id == cmt.post.id %}
+                    @{{cmt.user.username}}:    {{cmt.comment}} 
+                    {% if request.user.username == cmt.user.username %}
+                        <span id="commentId{{cmt.post.id}}" value='{{cmt.id}}' style="display: ;" > {{cmt.id}} </span>
+                        <button type="button" onclick="updateOpenModal('{{ cmt.post.id }}')">update</button>
+                        <button type="button" onclick="deleteCmt('{{cmt.id}}')">delete</button>
+                    {% endif %}
+                    <hr>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <!----------------------------------------------------------------------->
             </label>
 
             <button onclick="openModal('{{ post.id }}')"  class="myBtn">Comment</button>
         </div>
-
     {% endfor %}
 
     {% for post in all_user_post %}
-<!-- The Modal -->
+<!-- update Modal -->
+<div id="updateMyModal{{ post.id }}" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Model -->
+        <span onclick="updateCloseModal('{{ post.id }}')" class="close">&times;</span>
+        <h1>Comment</h1>
+            <form id="commentForm{{ post.id }}">
+                {% csrf_token %}
+                <textarea name="comment" id="updateComment{{ post.id }}" cols="50" rows="5"></textarea>
+                <button type="button" onclick="updateComment('{{ post.id }}')">update (ajax)</button>
+                
+            </form>
+    </div>
+</div>
+{% endfor %}
+
+
+    {% for post in all_user_post %}
+<!-- submit Modal -->
 <div id="myModal{{ post.id }}" class="modal">
     <!-- Modal content -->
     <div class="modal-content">
@@ -143,8 +168,8 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{% static 'post/comment.js' %}"></script>
+<script src="{% static 'post/updateComment.js' %}"></script>
 <script src="{% static 'post/like.js' %}"></script>
-
 </html>
 
 
